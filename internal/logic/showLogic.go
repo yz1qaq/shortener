@@ -7,7 +7,6 @@ import (
 	"context"
 	"database/sql"
 	"errors"
-	"fmt"
 
 	"shortener/internal/svc"
 	"shortener/internal/types"
@@ -40,9 +39,7 @@ func (l *ShowLogic) Show(req *types.ShowRequest) (resp *types.ShowResponse, err 
 	exist, err := l.svcCtx.Filter.Exists([]byte(req.ShortUrl))
 	if err != nil {
 		logx.Errorw("l.svcCtx.Filter.Exists failed!", logx.LogField{Key: "err", Value: err.Error()})
-	}
-
-	if !exist {
+	} else if !exist {
 		return nil, bloom404
 	}
 
@@ -52,7 +49,6 @@ func (l *ShowLogic) Show(req *types.ShowRequest) (resp *types.ShowResponse, err 
 		return nil, err
 	}
 	lUrl := result.Lurl
-	fmt.Println(lUrl.String)
 	return &types.ShowResponse{
 		LongUrl: lUrl.String,
 	}, nil
